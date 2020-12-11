@@ -1,0 +1,64 @@
+<%- include('./partials/head.ejs')  %> 
+<style>
+
+    /* .about{
+        word-wrap: break-word
+    } */
+
+   .row{
+    border: 1px solid #ccc;
+    border-radius:10px
+   }
+
+   .left-po{
+       display:flex;
+       flex-direction:column;
+       /* border-right: 2px solid #ccc; */
+   }
+
+   .right-po{
+       display:flex;
+       flex-direction:column;
+       justify-content: space-around;
+   }
+
+   .image{
+       height:140px;
+       width:120px;
+   }
+   .image img{
+       height:100%;width:100%;
+       border-radius:50%
+   }
+
+</style>
+<body>
+    <%- include('./partials/nav.ejs')  %> 
+    <% if(profiles.length>0){ %>
+        <% profiles.forEach((profile)=>{%> 
+            <% if(profile.name&&profile.avatar&&profile.about&&profile.year){ %> 
+            <div class="container my-3">
+                <div class="row pb-2">
+                        <div class="left-po col-xs-4 py-4 pr-4 pl-2">
+                            <div class="image">
+                                <img src="/<%=profile.avatar %> " alt="image">
+                            </div>
+                         
+                          
+                        </div>
+            
+                        <div class="right-po pl-5  col-xs-6">
+                            <h4 class="pt-2"><%= profile.name %> </h4>
+                            <div class="pt-3">Year: <h4 class="font-weight-bold d-inline"><%= profile.year  %> </h4></div>
+                            <div class="pt-3 about"><div>About: <%= profile.about  %> </div></div>
+                            <div class="pt-3"><a href="<%= profile.link  %> " class="btn btn-outline-secondary"><%= profile.name.split(' ')[0]%>'s github link </a></div>
+                        </div>
+                </div>
+            </div>
+        <% } %> 
+        <% }) %>     
+    <% }else{ %>
+        <h1>No posts yet.</h1>
+    <% } %>     
+
+    <%- include('./partials/end.ejs')  %> 

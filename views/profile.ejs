@@ -1,0 +1,87 @@
+<%- include('./partials/head.ejs')  %> 
+<style>
+  .image{
+      height:120px;
+      width:120px;
+      border-radius: 300px;
+  }
+
+  .image img{
+      height:100%;
+      border-radius: 300px;
+  }
+
+  .card{
+      padding-top:20px
+  }
+</style>
+<body>
+    <%- include('./partials/nav.ejs')  %> 
+    <div class="container">
+        <div class="card mx-auto" style="width: 20rem;">
+            <div class="card-body mx-auto">
+                <h4 class="card-title mx-auto">Welcome  <%=user.name.split(' ')[0]  %> </h4>
+            </div>
+            <div class="image mx-auto"><img class="card-img-top" src="/<%= user.avatar %> " alt="image"></div>
+            <div class="card-body">                
+        <form action="/upload-profile" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <div class="custom-file">
+                    <input type="file" id="myfile" name="avatar" class="custom-file-input">
+                    <label class="custom-file-label" for="myfile">Upload image</label>
+                </div>
+            </div>
+            <button class="btn btn-primary" type="submit">Upload pic</button>
+        </form>
+   
+            </div>
+        </div>
+
+        
+        <br>
+        <br>
+     <div class="container">
+        <form action="/update-info" method="POST">
+            <% if(error!=''){ %>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <%= error%>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <% } %> 
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input class="form-control" type="text" id="name" name="name" placeholder="Enter name" value="<%= user.name  %> ">
+            </div>
+            
+            <div class="form-group">
+                <label for="githubLink">Github's link</label>
+                <input class="form-control form-control-sm" type="text" name="githublink" id="githubLink" placeholder="Your Github's link here..."
+                value="<%= user.link  %> ">
+            </div>
+           
+            <div class="form-group">
+                <label for="year">Your current year</label>
+                <select class="form-control" id="year" name="year" value="<%= user.year %> ">
+                    <option>1st</option>
+                    <option>2nd</option>
+                    <option>3rd</option>
+                    <option>4th</option>
+                    <option>5th</option>
+                </select>
+            </div>
+            <!-- TEXTAREA -->
+            <div class="form-group">
+                <label for="about">About</label>
+                <textarea class="form-control" id="about" rows="3" name="about" placeholder="Tell people about you"><%= user.about  %></textarea>
+            </div>
+                  
+            <br>
+            <button class="btn btn-primary mb-4" type="submit">Save changes</button>
+        </form>
+     </div>
+    </div>
+
+
+<%- include('./partials/end.ejs')  %> 
