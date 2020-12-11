@@ -91,7 +91,7 @@ router.post("/signup", auth.forLoginPage, async (req, res) => {
       subject: "Signup succeeded!",
       html: `<h1>You successfully signed up!</h1>
         <h4>Please verify your email clicking below:</h4>
-         <a href="http://localhost:3000/verify-token/${token}">Click here</a>
+         <a href="https://create-github-profiles.herokuapp.com/verify-token/${token}">Click here</a>
         
         `,
     });
