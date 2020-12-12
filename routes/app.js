@@ -246,7 +246,7 @@ router.post("/upload-profile", auth.auth, async (req, res) => {
 
   req.user.avatar = avatar;
   await req.user.save({ validateBeforeSave: false });
-
+  res.set("Content-Type", "image/png");
   res.redirect("/me");
 });
 
@@ -308,7 +308,7 @@ router.post("/forgot-password", async (req, res) => {
         subject: "Password reset mail!",
         html: `<h1>This mail is to reset your password</h1>
           <h4>Please click below to reset your password:</h4>
-           <a href=https://create-github-profiles.herokuapp.com/reset-password/${token}">Click here</a>
+           <a href=https://create-github-profiles.herokuapp.com/reset-password/${token}>Click here</a>
           
           `,
       });
@@ -354,12 +354,15 @@ router.post("/reset-password/:id", async (req, res) => {
   console.log(id);
   const { password, passwordConfirm } = req.body;
   if (!password || !passwordConfirm) {
-    req.flash("error", "Passwords don't match");
-    return res.render("/reset-password");
+    req.flash("error", "Enter all the fields");
+    return res.render("reset-password", {
+      id: id,
+    });
   }
   if (password.length < 7) {
     req.flash("error", "Password length must be at least 7 characters long");
-    return res.render("/reset-password", {
+
+    return res.render("reset-password", {
       id: id,
     });
   }
