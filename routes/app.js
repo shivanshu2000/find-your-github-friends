@@ -122,7 +122,7 @@ router.get("/verify-token/:token", async (req, res) => {
 
   if (!user) {
     req.flash("error", "Email is not verified!Please try again");
-    return res.redirect("signup");
+    return res.redirect("/signup");
   }
 
   user.verified = true;
