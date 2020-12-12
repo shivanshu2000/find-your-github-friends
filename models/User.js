@@ -33,7 +33,8 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    default: "WIN_20201208_21_03_44_Pro",
+    default:
+      "https://st2.depositphotos.com/4111759/12123/v/950/depositphotos_121233262-stock-illustration-male-default-placeholder-avatar-profile.jpg",
   },
 
   about: {
