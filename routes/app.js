@@ -260,7 +260,7 @@ router.post("/upload-profile", auth.auth, async (req, res) => {
 
 router.post("/update-info", auth.auth, async (req, res) => {
   const { name, about, githublink, year } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
   if (!name || !about || !githublink || !year) {
     req.flash("error", "Please enter all the fields.All fields are required");
     return res.redirect("/me");
@@ -272,7 +272,7 @@ router.post("/update-info", auth.auth, async (req, res) => {
   req.user.year = year;
   await req.user.save({ validateBeforeSave: false });
   res.redirect("/me");
-  console.log(req.body);
+  // console.log(req.body);
 });
 
 router.get("/forgot", auth.forLoginPage, (req, res) => {
@@ -362,20 +362,22 @@ router.post("/reset-password/:id", async (req, res) => {
   console.log(id);
   const { password, passwordConfirm } = req.body;
   if (!password || !passwordConfirm) {
+    res.locals.error = req.flash("error");
     req.flash("error", "Enter all the fields");
     return res.render("reset-password", {
       id: id,
     });
   }
   if (password.length < 7) {
+    res.locals.error = req.flash("error");
     req.flash("error", "Password length must be at least 7 characters long");
-
     return res.render("reset-password", {
       id: id,
     });
   }
 
   if (password !== passwordConfirm) {
+    res.locals.error = req.flash("error");
     req.flash("error", "Password does not match");
     return res.render("reset-password", {
       id: id,
@@ -384,6 +386,8 @@ router.post("/reset-password/:id", async (req, res) => {
 
   const user = await User.findOne({ _id: id });
   user.password = password;
+  res.clearCookie("jwt");
+  user.tokens = [];
   await user.save({ validateBeforeSave: false });
   req.flash("success_msg", "Password reset successfully! Please login.");
   res.redirect("/login");

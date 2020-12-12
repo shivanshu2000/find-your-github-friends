@@ -8,6 +8,7 @@ exports.auth = async (req, res, next) => {
     return res.redirect("/login");
   }
   const token = await jwt.verify(cookie, process.env.JWT_SECRET);
+
   const user = await User.findOne({ _id: token._id, "tokens.token": cookie });
   //   console.log(cookie === user.token);
   if (!user) {
