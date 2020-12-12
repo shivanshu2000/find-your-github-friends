@@ -246,7 +246,7 @@ router.post("/upload-profile", auth.auth, async (req, res) => {
     req.flash("error", "Please provie an image.");
     return res.redirect("/me");
   }
-  const avatar = image.filename;
+  const avatar = image.path;
 
   console.log(image);
   // console.log(avatar);
