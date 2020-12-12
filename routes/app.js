@@ -19,13 +19,20 @@ const transporter = nodemailer.createTransport(
 );
 
 router.get("/", auth.auth, async (req, res) => {
-  console.log(req.token, "   ", req.user.tokens);
-  const isAuthenticated = req.token ? true : false;
-  const profiles = await User.find();
-  res.render("index", {
-    isAuthenticated: isAuthenticated,
-    profiles: profiles,
-  });
+  try {
+    const contentType = req.headers["content-type"];
+    console.log(contentType);
+    // res.setHeader("accept", "image/jpeg");
+
+    const isAuthenticated = req.token ? true : false;
+    const profiles = await User.find();
+    res.render("index", {
+      isAuthenticated: isAuthenticated,
+      profiles: profiles,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 router.post("/signup", auth.forLoginPage, async (req, res) => {
@@ -239,14 +246,15 @@ router.post("/upload-profile", auth.auth, async (req, res) => {
     req.flash("error", "Please provie an image.");
     return res.redirect("/me");
   }
-  const avatar = image.path;
+  const avatar = image.filename;
 
   console.log(image);
   // console.log(avatar);
 
   req.user.avatar = avatar;
   await req.user.save({ validateBeforeSave: false });
-  res.set("Content-Type", "image/png");
+  res.setHeader("Content-Type", "image/png");
+  res.setHeader("Content-Type", "image/jpeg");
   res.redirect("/me");
 });
 
@@ -362,6 +370,13 @@ router.post("/reset-password/:id", async (req, res) => {
   if (password.length < 7) {
     req.flash("error", "Password length must be at least 7 characters long");
 
+    return res.render("reset-password", {
+      id: id,
+    });
+  }
+
+  if (password !== passwordConfirm) {
+    req.flash("error", "Password does not match");
     return res.render("reset-password", {
       id: id,
     });

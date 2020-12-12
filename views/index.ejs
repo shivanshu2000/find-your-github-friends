@@ -41,7 +41,11 @@
                 <div class="row pb-2">
                         <div class="left-po col-xs-4 py-4 pr-4 pl-2">
                             <div class="image">
-                                <img src="/<%=profile.avatar %> " alt="image">
+                                <% if(profile.avatar) { %> 
+                                <img src="/<%= profile.avatar %> " alt="image">
+                                <% }else{ %>
+                                    <img src="https://source.unsplash.com/random/300x200" alt="image">
+                                 <% } %> 
                             </div>
                          
                           
