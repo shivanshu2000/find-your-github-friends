@@ -23,7 +23,10 @@
             <div class="card-body mx-auto">
                 <h4 class="card-title mx-auto">Welcome  <%=user.name.split(' ')[0]  %> </h4>
             </div>
-            <div class="image mx-auto"><img class="card-img-top" src="/<%= user.avatar %> " alt="image"></div>
+            <div class="image mx-auto"><img class="card-img-top" src="/<%= user.avatar %>" 
+                onerror="this.onerror=null;
+                this.src='https://st2.depositphotos.com/4111759/12123/v/950/depositphotos_121233262-stock-illustration-male-default-placeholder-avatar-profile.jpg';"
+                alt="image"></div>
             <div class="card-body">                
         <form action="/upload-profile" method="POST" enctype="multipart/form-data">
             <div class="form-group">

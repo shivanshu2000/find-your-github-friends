@@ -42,7 +42,10 @@
                         <div class="left-po col-xs-4 py-4 pr-4 pl-2">
                             <div class="image">
                                 <% if(profile.avatar) { %> 
-                                <img src="/<%= profile.avatar %> " alt="image">
+                                <img src="/<%= profile.avatar %> "
+                                onerror="this.onerror=null;
+                                this.src='https://st2.depositphotos.com/4111759/12123/v/950/depositphotos_121233262-stock-illustration-male-default-placeholder-avatar-profile.jpg';"
+                                alt="image">
                                 <% }else{ %>
                                     <img src="https://source.unsplash.com/random/300x200" alt="image">
                                  <% } %> 
