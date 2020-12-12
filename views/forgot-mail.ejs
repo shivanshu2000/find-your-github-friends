@@ -1,0 +1,27 @@
+<%- include('./partials/head.ejs')  %> 
+
+<body>
+    <%- include('./partials/nav.ejs')  %>  
+
+    <div class="row mt-5">
+        <div class="col-md-5 m-auto">
+          <div class="card card-body">
+   <div class="container">
+    <form action="/forgot-password" method="POST">
+        <h1 class="text-center mb-3">Reset Password</h1>
+        <%- include('./partials/messages.ejs')  %> 
+ 
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <input class="form-control form-control-lg" type="email" id="email" name="email" placeholder="Enter email">
+            <small class="form-text text-muted">Your email will not ever be shared</small>
+        </div>
+        <button type="submit" class="btn btn-outline-success btn-block">Send password reset mail</button>
+        </form>
+   </div>
+</div>
+</div>
+</div>
+
+
+    <%- include('./partials/end.ejs')  %>     

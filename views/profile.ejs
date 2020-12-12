@@ -42,14 +42,8 @@
         <br>
      <div class="container">
         <form action="/update-info" method="POST">
-            <% if(error!=''){ %>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <%= error%>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <% } %> 
+            <%- include('./partials/messages.ejs')  %> 
+
             <div class="form-group">
                 <label for="name">Name</label>
                 <input class="form-control" type="text" id="name" name="name" placeholder="Enter name" value="<%= user.name  %> ">

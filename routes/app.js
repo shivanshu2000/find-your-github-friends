@@ -266,4 +266,108 @@ router.post("/update-info", auth.auth, async (req, res) => {
   res.redirect("/me");
   console.log(req.body);
 });
+
+router.get("/forgot", auth.forLoginPage, (req, res) => {
+  const isAuthenticated = !req.token ? false : true;
+  res.render("forgot-mail", {
+    isAuthenticated,
+  });
+});
+
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    console.log(email);
+    if (!email) {
+      req.flash("error", "Please provide an email.");
+      return res.redirect("/forgot");
+    }
+
+    const user = await User.findOne({ email: email, verified: true });
+
+    if (!user) {
+      req.flash("error", "This email is not registered.");
+      return res.redirect("/forgot");
+    }
+
+    crypto.randomBytes(32, async (err, buffer) => {
+      if (err) {
+        console.log(err);
+        return res.redirect("/forgot");
+      }
+      const token = await buffer.toString("hex");
+
+      user.verificationToken = token;
+      user.tokenExpiry = Date.now() + 3600000;
+
+      await user.save({ validateBeforeSave: false });
+
+      await transporter.sendMail({
+        to: email,
+        from: "shivanshusr82@gmail.com",
+        subject: "Password reset mail!",
+        html: `<h1>This mail is to reset your password</h1>
+          <h4>Please click below to reset your password:</h4>
+           <a href=https://create-github-profiles.herokuapp.com/reset-password/${token}">Click here</a>
+          
+          `,
+      });
+
+      req.flash(
+        "success_msg",
+        "Password reset mail has been sent. please check your mailbox"
+      );
+      res.redirect("/forgot");
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get("/reset-password/:token", auth.forLoginPage, async (req, res) => {
+  const token = req.params.token;
+  // console.log(token);
+  const user = await User.findOne({
+    verificationToken: token,
+    tokenExpiry: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    req.flash("error", "token expired please try again");
+    return res.redirect("/forgot");
+  }
+  const isAuthenticated = !req.token ? false : true;
+
+  user.verificationToken = undefined;
+  user.tokenExpiry = undefined;
+  await user.save({ validateBeforeSave: false });
+  res.locals.success_msg = req.flash("success_msg");
+  res.render("reset-password", {
+    id: user._id,
+    isAuthenticated,
+    success_msg: "Please enter your new password",
+  });
+});
+
+router.post("/reset-password/:id", async (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  const { password, passwordConfirm } = req.body;
+  if (!password || !passwordConfirm) {
+    req.flash("error", "Passwords don't match");
+    return res.render("/reset-password");
+  }
+  if (password.length < 7) {
+    req.flash("error", "Password length must be at least 7 characters long");
+    return res.render("/reset-password", {
+      id: id,
+    });
+  }
+
+  const user = await User.findOne({ _id: id });
+  user.password = password;
+  await user.save({ validateBeforeSave: false });
+  req.flash("success_msg", "Password reset successfully! Please login.");
+  res.redirect("/login");
+});
 module.exports = router;
