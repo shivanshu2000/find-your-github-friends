@@ -299,6 +299,11 @@ router.post("/update-info", auth.auth, async (req, res) => {
     return res.redirect("/me");
   }
 
+  if (githublink && !githublink.includes("https://github.com/")) {
+    req.flash("error", "Please enter a valid github link");
+    return res.redirect("/me");
+  }
+
   req.user.name = name;
   req.user.about = about;
   req.user.link = githublink;
