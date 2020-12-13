@@ -37,6 +37,16 @@ const userSchema = new mongoose.Schema({
       "https://st2.depositphotos.com/4111759/12123/v/950/depositphotos_121233262-stock-illustration-male-default-placeholder-avatar-profile.jpg",
   },
 
+  repos: {
+    type: String,
+    default: "",
+  },
+
+  college: {
+    type: String,
+    default: "",
+  },
+
   about: {
     type: String,
     default: "",

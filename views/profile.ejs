@@ -62,7 +62,7 @@
             <div class="form-group">
                 <label for="year">Your current year</label>
                 <select class="form-control" id="year" name="year">
-                    <option><%= user.year %> </option>
+                    <option hidden><%= user.year %> </option>
                     <option>1st</option>          
                     <option>2nd</option>
                     <option>3rd</option>
@@ -74,6 +74,18 @@
             <div class="form-group">
                 <label for="about">About</label>
                 <textarea class="form-control" id="about" rows="3" name="about" placeholder="Tell people about you"><%= user.about  %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="college">Your college(abbreviation is recommended e.g. NITH)</label>
+                <input class="form-control form-control-sm" type="text" name="college" id="college" placeholder="Your college name here..."
+                value="<%= user.college  %> ">
+            </div>
+
+            <div class="form-group">
+                <label for="repos">Your total repos</label>
+                <input class="form-control form-control-sm" type="text" name="repos" id="repos" placeholder="Your repo(s) count here..."
+                value="<%= user.repos  %> ">
             </div>
                   
             <br>

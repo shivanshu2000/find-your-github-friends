@@ -21,18 +21,51 @@ const transporter = nodemailer.createTransport(
 router.get("/", auth.auth, async (req, res) => {
   try {
     const contentType = req.headers["content-type"];
-    console.log(contentType);
-    // res.setHeader("accept", "image/jpeg");
+    // console.log(contentType);
 
+    // res.setHeader("accept", "image/jpeg");
     const isAuthenticated = req.token ? true : false;
-    const profiles = await User.find();
+    const searchquery = req.query.search ? req.query.search : "";
+    const page = req.query.page ? req.query.page * 1 : 1;
+    console.log(searchquery, "here");
+
+    if (page < 1) {
+      return res.redirect("/");
+    }
+
+    const comingFrom = searchquery ? searchquery : "";
+    const profiles = await User.find({
+      name: { $regex: searchquery, $options: "i" },
+    })
+      .limit(15)
+      .skip((page - 1) * 15);
     res.render("index", {
       isAuthenticated: isAuthenticated,
       profiles: profiles,
+      page,
+      searchquery,
+      comingFrom,
     });
   } catch (err) {
     console.log(err);
   }
+});
+
+router.post("/search", (req, res) => {
+  console.log(req.body);
+  let search = req.body.search;
+  search = search.split(" ");
+  filteredSearch = search.filter((item) => {
+    if (item === "") {
+      return false;
+    } else {
+      return true;
+    }
+  });
+
+  const searchBy = filteredSearch[0];
+  console.log(searchBy);
+  res.redirect(`/?search=${searchBy}`);
 });
 
 router.post("/signup", auth.forLoginPage, async (req, res) => {
@@ -259,9 +292,9 @@ router.post("/upload-profile", auth.auth, async (req, res) => {
 });
 
 router.post("/update-info", auth.auth, async (req, res) => {
-  const { name, about, githublink, year } = req.body;
+  const { name, about, githublink, year, repos, college } = req.body;
   // console.log(req.body);
-  if (!name || !about || !githublink || !year) {
+  if (!name || !about || !githublink || !year || !repos || !college) {
     req.flash("error", "Please enter all the fields.All fields are required");
     return res.redirect("/me");
   }
@@ -270,6 +303,9 @@ router.post("/update-info", auth.auth, async (req, res) => {
   req.user.about = about;
   req.user.link = githublink;
   req.user.year = year;
+  req.user.repos = repos;
+  req.user.college = college;
+
   await req.user.save({ validateBeforeSave: false });
   res.redirect("/me");
   // console.log(req.body);
