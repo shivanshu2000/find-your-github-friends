@@ -63,6 +63,12 @@ router.post("/search", (req, res) => {
     }
   });
 
+  if (req.body.search === "") {
+    // res.locals.error = req.flash("error");
+    req.flash("error", "Emptly search: Please enter a user name to search");
+    return res.redirect("/");
+  }
+
   const searchBy = filteredSearch[0];
   console.log(searchBy);
   res.redirect(`/?search=${searchBy}`);

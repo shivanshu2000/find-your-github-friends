@@ -2,12 +2,15 @@
 
 <body>
     <%- include('./partials/nav.ejs')  %> 
+   
     <div class="container">
         <form class="form-inline ml-auto mb-3" action="/search" method="POST">
         
             <input type="text" class="form-control mr-2 inline" style="width:15rem" name="search" placeholder="Search  by name">
             <button class="btn btn-outline-dark " type="submit"><i class="fa fa-search ml-0"></i></button>
+            
     </form>
+    <%- include('./partials/messages.ejs')  %> 
     </div>
     <% if(profiles.length>0){ %>
         <% profiles.forEach((profile)=>{%> 
