@@ -32,13 +32,21 @@ router.get("/", auth.auth, async (req, res) => {
     if (page < 1) {
       return res.redirect("/");
     }
-
+    let profiles;
     const comingFrom = searchquery ? searchquery : "";
-    const profiles = await User.find({
+    profiles = await User.find({
       name: { $regex: searchquery, $options: "i" },
     })
       .limit(15)
       .skip((page - 1) * 15);
+
+    if (!profiles.length > 0) {
+      profiles = await User.find({
+        college: { $regex: searchquery, $options: "i" },
+      })
+        .limit(15)
+        .skip((page - 1) * 15);
+    }
 
     console.log(profiles);
 

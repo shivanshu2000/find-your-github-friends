@@ -6,7 +6,7 @@
     <div class="container">
         <form class="form-inline ml-auto mb-3" action="/search" method="POST">
         
-            <input type="text" class="form-control mr-2 inline" style="width:15rem" name="search" placeholder="Search  by name">
+            <input type="text" class="form-control mr-2 inline" style="width:15rem" name="search" placeholder="Search by user or college name">
             <button class="btn btn-outline-dark " type="submit"><i class="fa fa-search ml-0"></i></button>
             
     </form>
@@ -20,7 +20,7 @@
                         <div class="left-po col-xs-4 py-4 pr-5 pl-2">
                             <div class="image">
                                 <% if(profile.avatar) { %> 
-                                <img src="/<%= profile.avatar %> "
+                                <img src="/<%= profile.avatar %>"
                                 onerror="this.onerror=null;
                                 this.src='https://st2.depositphotos.com/4111759/12123/v/950/depositphotos_121233262-stock-illustration-male-default-placeholder-avatar-profile.jpg';"
                                 alt="image">
