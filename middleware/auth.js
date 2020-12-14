@@ -29,7 +29,10 @@ exports.forLoginPage = async (req, res, next) => {
 
     if (cookie) {
       const token = await jwt.verify(cookie, process.env.JWT_SECRET);
-      const user = await User.findOne({ _id: token._id, token: cookie });
+      const user = await User.findOne({
+        _id: token._id,
+        "tokens.token": cookie,
+      });
       if (user) {
         return res.redirect("/");
       } else {

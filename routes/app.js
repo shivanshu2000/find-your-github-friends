@@ -110,6 +110,11 @@ router.post("/signup", auth.forLoginPage, async (req, res) => {
     return res.redirect("/signup");
   }
 
+  if (email && !email.includes("gmail.com")) {
+    req.flash("error", "Only emails are accepted.");
+    return res.redirect("/signup");
+  }
+
   if ((email && name && !password) || !passwordConfirm) {
     req.flash("error", "Enter the password");
     return res.redirect("/signup");
@@ -340,6 +345,10 @@ router.post("/update-info", auth.auth, async (req, res) => {
   req.user.college = college;
 
   await req.user.save({ validateBeforeSave: false });
+  req.flash(
+    "success_msg",
+    "Profile Updated. Please check all the details before leaving your profile section"
+  );
   res.redirect("/me");
   // console.log(req.body);
 });
