@@ -111,7 +111,7 @@ router.post("/signup", auth.forLoginPage, async (req, res) => {
   }
 
   if (email && !email.includes("gmail.com")) {
-    req.flash("error", "Only emails are accepted.");
+    req.flash("error", "Only gmails are accepted.");
     return res.redirect("/signup");
   }
 
