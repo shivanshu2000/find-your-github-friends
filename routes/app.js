@@ -39,6 +39,20 @@ router.get("/", auth.auth, async (req, res) => {
     })
       .limit(15)
       .skip((page - 1) * 15);
+
+    console.log(profiles);
+
+    if (
+      profiles.length === 1 &&
+      !profiles[0].about &&
+      !profiles[0].year &&
+      !profiles[0].link &&
+      !profiles[0].college &&
+      !profiles[0].repos
+    ) {
+      req.flash("error", "No user found! Try with other user name");
+      res.redirect("/");
+    }
     res.render("index", {
       isAuthenticated: isAuthenticated,
       profiles: profiles,
