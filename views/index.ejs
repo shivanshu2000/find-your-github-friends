@@ -16,17 +16,15 @@
         <% profiles.forEach((profile)=>{%> 
             <% if(profile.name&&profile.avatar&&profile.about&&profile.year&&profile.repos&&profile.college){ %> 
             <div class="container mb-3">
-                <div class="inex__row row pb-2">
+                <div class="index__row row pb-2">
                         <div class="left-po col-xs-4 py-4 pr-5 pl-2">
                             <div class="image">
-                                <% if(profile.avatar) { %> 
+    
                                 <img src="/<%= profile.avatar %>"
                                 onerror="this.onerror=null;
                                 this.src='https://st2.depositphotos.com/4111759/12123/v/950/depositphotos_121233262-stock-illustration-male-default-placeholder-avatar-profile.jpg';"
                                 alt="image">
-                                <% }else{ %>
-                                    <img src="https://source.unsplash.com/random/300x200" alt="image">
-                                 <% } %> 
+                
                             </div>
                          
                           
