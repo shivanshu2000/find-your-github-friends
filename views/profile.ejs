@@ -84,12 +84,20 @@
 
             <div class="form-group">
                 <label for="repos">Your total repos (Enter 'No' if you've no repo)</label>
-                <input class="form-control form-control-sm" type="text" name="repos" id="repos" placeholder="Your repo(s) count here..."
-                value="<%= user.repos  %> ">
+                <input class="form-control form-control-sm" type="number" min="1" name="repos" id="repos" placeholder="Your repo(s) count here..."
+                value="<%= user.repos  %>">
             </div>
-                  
+            <% if(!user.repos){ %>
+                <div class="alert alert-warning alert-dismissible fade show text-justify" role="alert">
+                    Note:The repo count will be automatically populated as per your github link
+                    whenever you create a new repo come here and click update profile button to have the latest repo count.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>     
+                  <% } %>     
             <br>
-            <button class="btn btn-primary mb-4" type="submit">Save changes</button>
+            <button class="btn btn-primary mb-4" type="submit">Update profile</button>
         </form>
      </div>
     </div>

@@ -9,6 +9,7 @@ const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const auth = require("../middleware/auth");
 const path = require("path");
+const axios = require("axios");
 
 const transporter = nodemailer.createTransport(
   sendgridTransport({
@@ -48,7 +49,7 @@ router.get("/", auth.auth, async (req, res) => {
         .skip((page - 1) * 15);
     }
 
-    console.log(profiles);
+    // console.log(profiles);
 
     if (
       profiles.length === 1 &&
@@ -325,31 +326,44 @@ router.post("/upload-profile", auth.auth, async (req, res) => {
 });
 
 router.post("/update-info", auth.auth, async (req, res) => {
-  const { name, about, githublink, year, repos, college } = req.body;
-  // console.log(req.body);
-  if (!name || !about || !githublink || !year || !repos || !college) {
-    req.flash("error", "Please enter all the fields.All fields are required");
-    return res.redirect("/me");
+  try {
+    const { name, about, githublink, year, repos, college } = req.body;
+    // console.log(req.body);
+    if (!name || !about || !githublink || !year || !college) {
+      req.flash("error", "Please enter all the fields.All fields are required");
+      return res.redirect("/me");
+    }
+
+    if (githublink && !githublink.includes("https://github.com/")) {
+      req.flash("error", "Please enter a valid github link");
+      return res.redirect("/me");
+    }
+
+    const userName = githublink.split("https://github.com/")[1];
+    console.log(userName);
+
+    const data = await axios.get(`https://api.github.com/users/${userName}`);
+    // console.log(repoCount);
+
+    const repoCount = data.data.public_repos;
+    console.log(repoCount);
+
+    req.user.name = name;
+    req.user.about = about;
+    req.user.link = githublink;
+    req.user.year = year;
+    req.user.repos = repoCount;
+    req.user.college = college;
+
+    await req.user.save({ validateBeforeSave: false });
+    req.flash(
+      "success_msg",
+      "Profile Updated. Please check all the details before leaving your profile section"
+    );
+    res.redirect("/me");
+  } catch (err) {
+    console.log(err);
   }
-
-  if (githublink && !githublink.includes("https://github.com/")) {
-    req.flash("error", "Please enter a valid github link");
-    return res.redirect("/me");
-  }
-
-  req.user.name = name;
-  req.user.about = about;
-  req.user.link = githublink;
-  req.user.year = year;
-  req.user.repos = repos;
-  req.user.college = college;
-
-  await req.user.save({ validateBeforeSave: false });
-  req.flash(
-    "success_msg",
-    "Profile Updated. Please check all the details before leaving your profile section"
-  );
-  res.redirect("/me");
   // console.log(req.body);
 });
 
