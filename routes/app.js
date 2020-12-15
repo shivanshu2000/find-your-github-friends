@@ -343,7 +343,11 @@ router.post("/update-info", auth.auth, async (req, res) => {
     console.log(userName);
 
     const data = await axios.get(`https://api.github.com/users/${userName}`);
-    // console.log(repoCount);
+
+    if (data === undefined) {
+      req.flash("error", "Invalid github link. Please check the link again");
+      return res.redirect("/me");
+    }
 
     const repoCount = data.data.public_repos;
     console.log(repoCount);
@@ -362,7 +366,9 @@ router.post("/update-info", auth.auth, async (req, res) => {
     );
     res.redirect("/me");
   } catch (err) {
-    console.log(err);
+    // console.log(err);
+    req.flash("error", "Invalid github link. Please check the link again");
+    return res.redirect("/me");
   }
   // console.log(req.body);
 });
