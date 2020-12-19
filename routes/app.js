@@ -156,7 +156,7 @@ router.post("/signup", auth.forLoginPage, async (req, res) => {
       name,
       passwordConfirm,
       verificationToken: token,
-      tokenExpiry: Date.now() + 3600000,
+      tokenExpiry: Date.now() + 30 * 60 * 1000,
     });
 
     await transporter.sendMail({
@@ -404,7 +404,7 @@ router.post("/forgot-password", async (req, res) => {
       const token = await buffer.toString("hex");
 
       user.verificationToken = token;
-      user.tokenExpiry = Date.now() + 3600000;
+      user.tokenExpiry = Date.now() + 30 * 60 * 1000;
 
       await user.save({ validateBeforeSave: false });
 
@@ -413,12 +413,12 @@ router.post("/forgot-password", async (req, res) => {
         from: "shivanshusr82@gmail.com",
         subject: "Password reset mail!",
         html: `<h1>This mail is to reset your password</h1>
-          <h4>Please click below to reset your password:</h4>
+          <h4>This mail is only valid for 30 minutes.Please click below to reset your password:</h4>
            <a href=https://create-github-profiles.herokuapp.com/reset-password/${token}>Click here</a>
           
           `,
       });
-
+      // https://create-github-profiles.herokuapp.com/
       req.flash(
         "success_msg",
         "Password reset mail has been sent. please check your mailbox"
@@ -444,46 +444,43 @@ router.get("/reset-password/:token", auth.forLoginPage, async (req, res) => {
   }
   const isAuthenticated = !req.token ? false : true;
 
-  user.verificationToken = undefined;
-  user.tokenExpiry = undefined;
-  await user.save({ validateBeforeSave: false });
   res.locals.success_msg = req.flash("success_msg");
+  req.flash("success_msg", "Please enter your new password");
   res.render("reset-password", {
+    token: token,
     id: user._id,
     isAuthenticated,
     success_msg: "Please enter your new password",
   });
 });
 
-router.post("/reset-password/:id", async (req, res) => {
+router.post("/reset-password/:id/:token", async (req, res) => {
   const id = req.params.id;
+  const token = req.params.token;
   console.log(id);
   const { password, passwordConfirm } = req.body;
   if (!password || !passwordConfirm) {
     res.locals.error = req.flash("error");
     req.flash("error", "Enter all the fields");
-    return res.render("reset-password", {
-      id: id,
-    });
+    return res.redirect(`/reset-password/${token}`);
   }
   if (password.length < 7) {
     res.locals.error = req.flash("error");
     req.flash("error", "Password length must be at least 7 characters long");
-    return res.render("reset-password", {
-      id: id,
-    });
+    return res.redirect(`/reset-password/${token}`);
   }
 
   if (password !== passwordConfirm) {
     res.locals.error = req.flash("error");
     req.flash("error", "Password does not match");
-    return res.render("reset-password", {
-      id: id,
-    });
+    return res.redirect(`/reset-password/${token}`);
   }
 
   const user = await User.findOne({ _id: id });
   user.password = password;
+
+  user.verificationToken = undefined;
+  user.tokenExpiry = undefined;
   res.clearCookie("jwt");
   user.tokens = [];
   await user.save({ validateBeforeSave: false });
