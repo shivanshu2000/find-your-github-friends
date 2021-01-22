@@ -19,13 +19,15 @@ const transporter = nodemailer.createTransport(
   })
 );
 
-router.get("/", auth.auth, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const contentType = req.headers["content-type"];
     // console.log(contentType);
 
     // res.setHeader("accept", "image/jpeg");
     const isAuthenticated = req.token ? true : false;
+
+    console.log(isAuthenticated);
     const searchquery = req.query.search ? req.query.search : "";
     const page = req.query.page ? req.query.page * 1 : 1;
     console.log(searchquery, "here");
@@ -52,7 +54,7 @@ router.get("/", auth.auth, async (req, res) => {
     // console.log(profiles);
 
     if (
-      profiles.length === 1 &&
+      profiles.length === 7 &&
       !profiles[0].about &&
       !profiles[0].year &&
       !profiles[0].link &&
@@ -60,8 +62,9 @@ router.get("/", auth.auth, async (req, res) => {
       !profiles[0].repos
     ) {
       req.flash("error", "No user found! Try with other user name");
-      res.redirect("/");
+      return res.redirect("/");
     }
+
     res.render("index", {
       isAuthenticated: isAuthenticated,
       profiles: profiles,
@@ -418,7 +421,7 @@ router.post("/forgot-password", async (req, res) => {
           
           `,
       });
-      // https://create-github-profiles.herokuapp.com/
+
       req.flash(
         "success_msg",
         "Password reset mail has been sent. please check your mailbox"

@@ -19,6 +19,7 @@ exports.auth = async (req, res, next) => {
   req.token = cookie;
   req.user = user;
   res.locals.isAuthenticated = true;
+  res.isAuthenticated = true;
   // console.log(req.user);
   next();
 };
