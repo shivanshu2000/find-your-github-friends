@@ -7,10 +7,7 @@ const flash = require("connect-flash");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
-const DB = process.env.MONGO_URL.replace(
-  "<PASSWORD>",
-  process.env.DATABASE_PASSWORD
-);
+const DB = process.env.MONGO_URL;
 
 const app = express();
 
@@ -55,6 +52,6 @@ mongoose
   })
   .then(() => console.log("DB connection successful!"));
 
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3005;
 
-app.listen(PORT);
+app.listen(process.env.PORT, (err) => console.log(err));
